@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddVideojuego">
+
+    <EditText
+        android:id="@+id/tituloInput"
+        android:layout_width="262dp"
+        android:layout_height="78dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="97dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="Titulo Videojuego"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/desarrolladorInput"
+        android:layout_width="260dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="97dp"
+        android:ems="10"
+        android:hint="Desarrollador Videojuego"
+        android:text="Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tituloInput" />
+
+    <EditText
+        android:id="@+id/lanzamientoInput"
+        android:layout_width="262dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="97dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="Fecha de Lanzamiento"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/desarrolladorInput" />
+
+    <EditText
+        android:id="@+id/generoInput"
+        android:layout_width="263dp"
+        android:layout_height="72dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="97dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lanzamientoInput" />
+
+    <Button
+        android:id="@+id/addButton"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="10dp"
+        android:text="Añadir"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/generoInput" />
+</androidx.constraintlayout.widget.ConstraintLayout>
