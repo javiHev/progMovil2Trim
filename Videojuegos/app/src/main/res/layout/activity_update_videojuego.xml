@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UpdateVideojuego">
+
+    <EditText
+        android:id="@+id/edit_ModificarTitulo"
+        android:layout_width="262dp"
+        android:layout_height="78dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="97dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="Nuevo Titulo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_ModificarDesarrollador"
+        android:layout_width="260dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="97dp"
+        android:ems="10"
+        android:hint="Nuevo Desarrollador"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_ModificarTitulo" />
+
+    <EditText
+        android:id="@+id/edit_ModificarLanzamiento"
+        android:layout_width="262dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="97dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="Nueva Fecha de Lanzamiento"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_ModificarDesarrollador" />
+
+
+    <Button
+        android:id="@+id/addButton"
+        android:layout_width="396dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="80dp"
+        android:text="GUARDAR"
+        android:onClick="guardar"
+        android:textAllCaps="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_ModificarLanzamiento" />
+</androidx.constraintlayout.widget.ConstraintLayout>
