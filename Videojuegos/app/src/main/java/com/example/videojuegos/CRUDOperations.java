@@ -29,7 +29,7 @@ public class CRUDOperations {
     }
 
     public Cursor devolverVideojuego() {
-        return baseDatos.query("videojuego", new String[]{"titulo", "desarrollador", "lanzamiento"}, null, null, null, null, null);
+        return baseDatos.query("videojuego", new String[]{"id", "titulo", "desarrollador", "lanzamiento"}, null, null, null, null, null);
     }
 
     public int updateVideojuego(String titulo, String desarrollador, String lanzamiento) {

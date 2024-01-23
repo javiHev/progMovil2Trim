@@ -1,39 +1,53 @@
 package com.example.videojuegos;
 
 import java.io.Serializable;
-
 public class Videojuego implements Serializable {
-        private String titulo;
-        private String desarrollador;
-        private String lanzamiento;
+    private static int contadorId = 0; // Contador estático para el ID
+    private int id;
+    private String titulo;
+    private String desarrollador;
+    private String lanzamiento;
 
     public Videojuego(String titulo, String desarrollador, String lanzamiento) {
-            this.titulo = titulo;
-            this.desarrollador = desarrollador;
-            this.lanzamiento = lanzamiento;
-        }
+        this.id = obtenerSiguienteId(); // Asigna el siguiente ID disponible
+        this.titulo = titulo;
+        this.desarrollador = desarrollador;
+        this.lanzamiento = lanzamiento;
+    }
 
-        public String getTitulo() {
-            return titulo;
-        }
+    private static synchronized int obtenerSiguienteId() {
+        return contadorId++; // Incrementa el contador y devuelve el valor
+    }
 
-        public String getDesarrollador() {
-            return desarrollador;
-        }
+    public int getId() {
+        return id;
+    }
 
-        public String getLanzamiento() {
-            return lanzamiento;
-        }
+    public String getTitulo() {
+        return titulo;
+    }
 
-        public void setTitulo(String titulo) {
-            this.titulo = titulo;
-        }
+    public String getDesarrollador() {
+        return desarrollador;
+    }
 
-        public void setDesarrollador(String desarrollador) {
-            this.desarrollador = desarrollador;
-        }
+    public String getLanzamiento() {
+        return lanzamiento;
+    }
 
-        public void setLanzamiento(String lanzamiento) {
-            this.lanzamiento = lanzamiento;
-        }
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public void setDesarrollador(String desarrollador) {
+        this.desarrollador = desarrollador;
+    }
+
+    public void setLanzamiento(String lanzamiento) {
+        this.lanzamiento = lanzamiento;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

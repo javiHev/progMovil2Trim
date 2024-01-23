@@ -1,12 +1,15 @@
 package com.example.videojuegos;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +23,7 @@ public class AddVideojuego extends AppCompatActivity {
     EditText edit_Desarrollador;
     EditText edit_Lanzamiento;
     private ArrayList<Videojuego> videojuegos = new ArrayList<>();
+
     Map<String, String> columnasExpresiones = new HashMap<String, String>() {
         {
             put("Titulo", "^[A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9]+([\\s'][A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9]+)*$");
@@ -32,6 +36,17 @@ public class AddVideojuego extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_videojuego);
+        edit_Titulo = findViewById(R.id.tituloInput);
+        edit_Desarrollador = findViewById(R.id.desarrolladorInput);
+        edit_Lanzamiento = findViewById(R.id.lanzamientoInput);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Mostrar el botón de retorno
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
     public void crearAlumno(View view) {
         boolean error = false;
@@ -66,15 +81,10 @@ public class AddVideojuego extends AppCompatActivity {
 
         CRUDOperations operaciones = CRUDOperations.getInstance(this);
         operaciones.addVideojuego(edit_Titulo.getText().toString(), edit_Desarrollador.getText().toString(), edit_Lanzamiento.getText().toString());
+
         videojuegos.add(new Videojuego(edit_Titulo.getText().toString(), edit_Desarrollador.getText().toString(), edit_Lanzamiento.getText().toString()));
 
         showToast("Videojuego añadido");
-    }
-
-    public void atras(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        showToast("Volviendo a la pantalla principal");
     }
 
     private boolean verificarExpresion(String patronCumplir, String textoBuscar) {
@@ -85,6 +95,16 @@ public class AddVideojuego extends AppCompatActivity {
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            Intent intent = new Intent(this, MainActivity.class); // Crea un intent para volver a MainActivity
+            startActivity(intent);
+            finish(); // Finaliza la actividad actual para que no quede en segundo plano
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

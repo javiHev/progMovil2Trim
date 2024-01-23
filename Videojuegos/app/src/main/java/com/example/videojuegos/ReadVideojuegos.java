@@ -1,71 +1,49 @@
 package com.example.videojuegos;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class ReadVideojuegos extends AppCompatActivity {
+    private RecyclerView recyclerView;
+    private VideojuegoAdapter adapter;
     private ArrayList<Videojuego> videojuegos = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_read_videojuegos);
-        LinearLayout linearLayout = findViewById(R.id.LinearLayoutAlumnos);
+        setContentView(R.layout.activity_main);
 
+        // Inicializa el RecyclerView y el adaptador
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new VideojuegoAdapter(this, videojuegos, this::openUpdateDeleteView);
+        recyclerView.setAdapter(adapter);
+
+        // Cargar datos en videojuegos
+        loadData();
+    }
+
+    private void loadData() {
+        // Aquí debes cargar tus datos en la lista de videojuegos.
+        // Por ahora, estamos obteniendo los datos del Intent, pero puedes modificarlo
+        // para cargarlos desde una base de datos o cualquier otra fuente.
         Intent intent = getIntent();
         if (intent.hasExtra("videojuegos")) {
             this.videojuegos = (ArrayList<Videojuego>) intent.getSerializableExtra("videojuegos");
-        }
-
-        for (int i = 0; i < this.videojuegos.size(); i++) {
-            TextView textView = new TextView(this);
-            textView.setText(this.videojuegos.get(i).getTitulo());
-            textView.setTextSize(18);
-            textView.setPadding(0, 200, 16, 16);
-
-            // Configurar estilo de texto en negrita
-            textView.setTypeface(null, Typeface.BOLD);
-
-            int finalI = i;
-
-            textView.setOnClickListener(view -> openVideojuego(finalI));
-
-            // Configurar el gravity para centrar verticalmente el TextView
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
-            layoutParams.gravity = Gravity.CENTER;
-            textView.setLayoutParams(layoutParams);
-
-            linearLayout.addView(textView);
+            adapter.notifyDataSetChanged(); // Notificar al adaptador que los datos han cambiado
         }
     }
 
-    public void atras(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
+    private void openUpdateDeleteView(int position) {
+        // Lógica para abrir la actividad de actualización/eliminación
+        Intent intent = new Intent(this, UpdateAndDelete.class);
+        intent.putExtra("videojuego", videojuegos.get(position));
         startActivity(intent);
-        showToast("Volviendo a la pantalla principal");
-    }
-
-    private void openVideojuego(int indxJuego) {
-        Intent intent = new Intent(this, AddVideojuego.class);
-        intent.putExtra("indxJuego", indxJuego);
-        intent.putExtra("videojuego", this.videojuegos);
-        startActivity(intent);
-        showToast("Abriendo detalles del alumno");
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

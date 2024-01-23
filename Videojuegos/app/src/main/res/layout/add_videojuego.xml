@@ -6,4 +6,70 @@
     android:layout_height="match_parent"
     tools:context=".AddVideojuego">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:titleTextColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Añadir Videojuego">
+    </androidx.appcompat.widget.Toolbar>
+
+    <EditText
+        android:id="@+id/tituloInput"
+        android:layout_width="262dp"
+        android:layout_height="78dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="97dp"
+        android:ems="10"
+        android:hint="Titulo Videojuego"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/desarrolladorInput"
+        android:layout_width="260dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="97dp"
+        android:ems="10"
+        android:hint="Desarrollador Videojuego"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tituloInput" />
+
+    <EditText
+        android:id="@+id/lanzamientoInput"
+        android:layout_width="262dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="97dp"
+        android:ems="10"
+        android:hint="Fecha de Lanzamiento"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/desarrolladorInput" />
+
+
+    <Button
+        android:id="@+id/addButton"
+        android:layout_width="396dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="80dp"
+        android:onClick="crearAlumno"
+        android:text="AÑADIR"
+        android:textAllCaps="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lanzamientoInput" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

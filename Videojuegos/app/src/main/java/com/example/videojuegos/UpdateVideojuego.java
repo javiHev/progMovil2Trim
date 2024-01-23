@@ -1,9 +1,11 @@
 package com.example.videojuegos;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -34,17 +36,24 @@ public class UpdateVideojuego extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_videojuego);
         Intent intent = getIntent();
-        if (intent.hasExtra("alumnos")) {
-            this.videojuegos = (ArrayList<Videojuego>) intent.getSerializableExtra("videojuegos");
-        }
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        if (intent.hasExtra("indxVideojuego")) {
-            this.videojuegoSelect = this.videojuegos.get(intent.getIntExtra("indexVideojuego", 0));
+        if (intent.hasExtra("indxVideojuego") && this.videojuegos != null) {
+            int index = intent.getIntExtra("indxVideojuego", -1);
+            if (index != -1 && index < this.videojuegos.size()) {
+                this.videojuegoSelect = this.videojuegos.get(index);
+            } else {
+                showToast("Error: Índice de videojuego inválido.");
+                return; // O maneja el error de forma adecuada
+            }
+        } else {
+            showToast("Error: No se ha recibido el índice del videojuego.");
+            return; // O maneja el error de forma adecuada
         }
-        this.edit_ModifyTitulo = findViewById(R.id.edit_ModificarTitulo);
-        this.edit_ModifyDesarrollador = findViewById(R.id.edit_ModificarDesarrollador);
-        this.edit_ModifyLanzamiento = findViewById(R.id.edit_ModificarLanzamiento);
-
+        edit_ModifyTitulo = findViewById(R.id.edit_ModificarTitulo);
+        edit_ModifyDesarrollador = findViewById(R.id.edit_ModificarDesarrollador);
+        edit_ModifyLanzamiento = findViewById(R.id.edit_ModificarLanzamiento);
         // Establecer valores iniciales en los EditText
         this.edit_ModifyTitulo.setText(this.videojuegoSelect.getTitulo());
         this.edit_ModifyDesarrollador.setText(this.videojuegoSelect.getDesarrollador());
@@ -53,17 +62,17 @@ public class UpdateVideojuego extends AppCompatActivity {
 
     public void guardar(View view) {
         boolean error = false;
-        if (!verificarExpresion(this.columnasExpresiones.get("Nombre"), this.edit_ModifyTitulo.getText().toString())) {
+        if (!verificarExpresion(this.columnasExpresiones.get("Titulo"), this.edit_ModifyTitulo.getText().toString())) {
             error = true;
-            showToast("Error en el nombre");
+            showToast("Error en el titulo");
         }
-        if (!verificarExpresion(this.columnasExpresiones.get("Apellidos"), this.edit_ModifyDesarrollador.getText().toString())) {
+        if (!verificarExpresion(this.columnasExpresiones.get("Desarrollador"), this.edit_ModifyDesarrollador.getText().toString())) {
             error = true;
-            showToast("Error en los apellidos");
+            showToast("Error en los desarrollador");
         }
-        if (!verificarExpresion(this.columnasExpresiones.get("Ciclo"), this.edit_ModifyLanzamiento.getText().toString())) {
+        if (!verificarExpresion(this.columnasExpresiones.get("Lanzamiento"), this.edit_ModifyLanzamiento.getText().toString())) {
             error = true;
-            showToast("Error en el ciclo");
+            showToast("Error en el lanzamiento");
         }
 
         if (!error) {
@@ -83,17 +92,10 @@ public class UpdateVideojuego extends AppCompatActivity {
             // Mostrar mensaje de éxito
             showToast("Videojuego Actualizado");
 
-            // Regresar a la actividad anterior
-            atras(view);
         }
     }
 
-    public void atras(View view) {
-        Intent intent = new Intent(this, UDVideojuego.class);
-        intent.putExtra("indexVideojuegos", this.videojuegos.indexOf(this.videojuegoSelect));
-        intent.putExtra("videojuegos", this.videojuegos);
-        startActivity(intent);
-    }
+
 
     public boolean verificarExpresion(String patronCumplir, String textoBuscar) {
         Pattern patron = Pattern.compile(patronCumplir);
@@ -109,5 +111,15 @@ public class UpdateVideojuego extends AppCompatActivity {
     protected void onDestroy() {
         // Cerrar operaciones si es necesario
         super.onDestroy();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            Intent intent = new Intent(this, MainActivity.class); // Crea un intent para volver a MainActivity
+            startActivity(intent);
+            finish(); // Finaliza la actividad actual para que no quede en segundo plano
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
