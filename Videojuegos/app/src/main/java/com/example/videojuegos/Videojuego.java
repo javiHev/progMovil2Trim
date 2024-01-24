@@ -1,6 +1,8 @@
 package com.example.videojuegos;
 
 import java.io.Serializable;
+import java.util.Objects;
+
 public class Videojuego implements Serializable {
     private static int contadorId = 0; // Contador estático para el ID
     private int id;
@@ -14,6 +16,24 @@ public class Videojuego implements Serializable {
         this.desarrollador = desarrollador;
         this.lanzamiento = lanzamiento;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Videojuego videojuego = (Videojuego) obj;
+        return id == videojuego.id; // Compara los IDs
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id); // Es buena práctica sobrescribir hashCode cuando sobrescribes equals
+    }
+
 
     private static synchronized int obtenerSiguienteId() {
         return contadorId++; // Incrementa el contador y devuelve el valor

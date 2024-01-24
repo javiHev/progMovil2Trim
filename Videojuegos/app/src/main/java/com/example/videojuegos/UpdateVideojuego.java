@@ -1,22 +1,22 @@
 package com.example.videojuegos;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+        import androidx.appcompat.app.AppCompatActivity;
+        import androidx.appcompat.widget.Toolbar;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
+        import android.content.Intent;
+        import android.os.Bundle;
+        import android.view.MenuItem;
+        import android.view.View;
+        import android.widget.EditText;
+        import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+        import java.util.ArrayList;
+        import java.util.HashMap;
+        import java.util.Map;
+        import java.util.regex.Matcher;
+        import java.util.regex.Pattern;
 
-public class UpdateVideojuego extends AppCompatActivity {
+public class  UpdateVideojuego extends AppCompatActivity {
     private ArrayList<Videojuego> videojuegos;
     private Videojuego videojuegoSelect;
     private EditText edit_ModifyTitulo;
@@ -38,6 +38,13 @@ public class UpdateVideojuego extends AppCompatActivity {
         Intent intent = getIntent();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Habilitar el botón de volver en el Toolbar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        videojuegos = (ArrayList<Videojuego>) intent.getSerializableExtra("videojuegos");
 
         if (intent.hasExtra("indxVideojuego") && this.videojuegos != null) {
             int index = intent.getIntExtra("indxVideojuego", -1);
@@ -88,10 +95,17 @@ public class UpdateVideojuego extends AppCompatActivity {
             this.videojuegoSelect.setTitulo(this.edit_ModifyTitulo.getText().toString());
             this.videojuegoSelect.setDesarrollador(this.edit_ModifyDesarrollador.getText().toString());
             this.videojuegoSelect.setLanzamiento(this.edit_ModifyLanzamiento.getText().toString());
+            for (Videojuego juego : videojuegos) {
+                if (juego.getId() == videojuegoSelect.getId()) {
+                    juego.setTitulo(this.edit_ModifyTitulo.getText().toString());
+                    juego.setDesarrollador(this.edit_ModifyDesarrollador.getText().toString());
+                    juego.setLanzamiento(this.edit_ModifyLanzamiento.getText().toString());
+                    break;
+                }
+            }
 
             // Mostrar mensaje de éxito
             showToast("Videojuego Actualizado");
-
         }
     }
 

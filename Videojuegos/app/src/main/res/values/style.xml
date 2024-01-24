@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/StatusBarColor</item>
+    </style>
+
+    <!-- Estilo para el Toolbar -->
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
+        <!-- Color del título -->
+        <item name="android:textColorPrimary">@color/toolbar_text_color</item>
+
+        <!-- Si quieres cambiar también el color de los ítems del menú -->
+        <item name="android:textColorSecondary">@color/toolbar_back_arrow_color</item>
+    </style>
+
+
+</resources>

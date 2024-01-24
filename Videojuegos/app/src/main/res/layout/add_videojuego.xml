@@ -10,12 +10,15 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="#27374D"
         android:titleTextColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Añadir Videojuego">
+        app:subtitleTextColor="@color/toolbar_text_color"
+        app:title="Añadir Videojuego"
+        android:theme="@style/ToolbarTheme">
+
     </androidx.appcompat.widget.Toolbar>
 
     <EditText
@@ -66,6 +69,7 @@
         android:layout_height="62dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="80dp"
+        android:backgroundTint="@color/button_color"
         android:onClick="crearAlumno"
         android:text="AÑADIR"
         android:textAllCaps="false"

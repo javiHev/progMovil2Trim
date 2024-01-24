@@ -52,7 +52,11 @@ public class UpdateAndDelete extends AppCompatActivity {
 
     public void updateVideojuego(View view) {
         int index = videojuegos.indexOf(videojuegoSelect);
-        System.out.println("Hola:"+videojuegoSelect.getId());
+        System.out.println("Id:"+videojuegoSelect.getId()+":"+videojuegoSelect.getTitulo());
+        for (Videojuego juego:videojuegos){
+            System.out.println("Juego "+juego.getId()+": "+juego.getTitulo());
+        }
+        System.out.println("EL JUEGO:"+index);
 
         if (index != -1) { // Verifica que el videojuego esté en la lista
             Intent intent = new Intent(UpdateAndDelete.this, UpdateVideojuego.class);

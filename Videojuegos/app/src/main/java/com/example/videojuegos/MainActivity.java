@@ -1,13 +1,17 @@
 package com.example.videojuegos;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = operaciones.devolverVideojuego();
         try {
             if (cursor != null && cursor.moveToFirst()) {
-                //int id_posicion = cursor.getColumnIndex("id");
                 int titulo_posicion = cursor.getColumnIndex("titulo");
                 int desarrollador_posicion = cursor.getColumnIndex("desarrollador");
                 int lanzamiento_posicion = cursor.getColumnIndex("lanzamiento");
@@ -93,11 +96,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onVideojuegoClick(int position) {
+
         Videojuego videojuegoSeleccionado = videojuegos.get(position);
         Intent intent = new Intent(MainActivity.this, UpdateAndDelete.class);
         intent.putExtra("videojuego", videojuegoSeleccionado);
         intent.putExtra("videojuegos", videojuegos); // Pasa la lista de videojuegos
         startActivity(intent);
+
     }
 
     @Override
