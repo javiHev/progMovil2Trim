@@ -30,9 +30,6 @@ public class ReadVideojuegos extends AppCompatActivity {
     }
 
     private void loadData() {
-        // Aquí debes cargar tus datos en la lista de videojuegos.
-        // Por ahora, estamos obteniendo los datos del Intent, pero puedes modificarlo
-        // para cargarlos desde una base de datos o cualquier otra fuente.
         Intent intent = getIntent();
         if (intent.hasExtra("videojuegos")) {
             this.videojuegos = (ArrayList<Videojuego>) intent.getSerializableExtra("videojuegos");

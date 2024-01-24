@@ -26,4 +26,8 @@ public class Conexion extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS videojuego");
         onCreate(db);
     }
+
+    public static String getTituloBd() {
+        return TITULO_BD;
+    }
 }

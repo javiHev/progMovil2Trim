@@ -25,8 +25,8 @@ public class  UpdateVideojuego extends AppCompatActivity {
 
     Map<String, String> columnasExpresiones = new HashMap<String, String>() {
         {
-            put("Titulo", "^[A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9]+([\\s'][A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9]+)*$");
-            put("Desarrollador", "^[A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9]+([\\s'][A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9]+)*$");
+            put("Titulo", "^[A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9:()\\-]+([\\s'][A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9:()\\-]+)*$");
+            put("Desarrollador", "^[A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9:()\\-]+([\\s'][A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9:()\\-]+)*$");
             put("Lanzamiento", "^(\\d{4}-\\d{2}-\\d{2}|)$");
         }
     };
@@ -83,9 +83,11 @@ public class  UpdateVideojuego extends AppCompatActivity {
         }
 
         if (!error) {
+
             // Realizar la actualización del alumno en la base de datos
             CRUDOperations operaciones = CRUDOperations.getInstance(this);
             operaciones.updateVideojuego(
+                    this.videojuegoSelect,
                     this.edit_ModifyTitulo.getText().toString(),
                     this.edit_ModifyDesarrollador.getText().toString(),
                     this.edit_ModifyLanzamiento.getText().toString()

@@ -26,8 +26,8 @@ public class AddVideojuego extends AppCompatActivity {
 
     Map<String, String> columnasExpresiones = new HashMap<String, String>() {
         {
-            put("Titulo", "^[A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9]+([\\s'][A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9]+)*$");
-            put("Desarrollador", "^[A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9]+([\\s'][A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9]+)*$");
+            put("Titulo", "^[A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9:()\\-]+([\\s'][A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9:()\\-]+)*$");
+            put("Desarrollador", "^[A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9:()\\-]+([\\s'][A-Za-záéíóúüñÁÉÍÓÚÜÑ0-9:()\\-]+)*$");
             put("Lanzamiento", "^(\\d{4}-\\d{2}-\\d{2}|)$");
         }
     };
