@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, Image, Alert } from 'react-native';
 import { useFonts } from 'expo-font';
-import AppLoading from 'expo-app-loading';
+
 
 
 const LoginScreen = ({ navigation }) => { 
@@ -12,14 +12,34 @@ const LoginScreen = ({ navigation }) => {
     'Sen-Regular': require('../assets/fonts/Sen-Regular.ttf'),
   });
 
+  const verificarReserva = async () => {
+    try {
+      const response = await fetch(`http://10.0.2.2:8000/reservas/telefono/${phoneNumber}`);
+      if (response.ok) {
+        const data = await response.json();
+        // Si el servidor devuelve una reserva, navega a Home
+        Alert.alert('Éxito', 'Número de teléfono vinculado a una reserva.');
+        navigation.navigate('Home');
+      } else {
+        // Si el servidor devuelve un error 404 u otro, muestra un mensaje
+        Alert.alert('Error', 'Número de teléfono no vinculado a ninguna reserva.');
+      }
+    } catch (error) {
+      console.error('Error al verificar la reserva:', error);
+      Alert.alert('Error', 'Hubo un problema al verificar la reserva.');
+    }
+  };
+  
   const handleLogin = () => {
-    if (phoneNumber.length < 10) {
+    const regex_phone = "^(\\+\\d{1,3}[- ]?)?\\d{9,10}$";
+    const regex = new RegExp(regex_phone);
+  
+    if (!regex.test(phoneNumber)) {
       Alert.alert('Error', 'Por favor, introduce un número de teléfono válido.');
     } else {
-      Alert.alert('Éxito', 'Número de teléfono aceptado.');
-      navigation.navigate('Home'); // Redirigir a la pantalla de Home
-    } // Este es el cierre del bloque else que faltaba
-  }; // Este es el cierre de la función handleLogin
+      verificarReserva(); // Llama a verificarReserva si el número de teléfono es válido
+    }
+  };
 
   if (!fontsLoaded) {
     return null; // O cualquier otro indicador de carga que prefieras

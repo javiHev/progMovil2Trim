@@ -3,7 +3,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
 // Componentes de pantalla simulados
-const MenuScreen = () => null;
+import MenuScreen from './MenuScreen';
+// import DrinksScreen from './DrinksScreen';
+// import CartScreen from './CartScreen';
+// const MenuScreen = () => null;
 const DrinksScreen = () => null;
 const CartScreen = () => null;
 
