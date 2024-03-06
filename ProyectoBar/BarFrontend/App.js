@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './components/LoginScreen'; // Asegúrate de que la ruta es correcta
 import HomeScreen from './components/HomeScreen'; // Asume que tienes un HomeScreen
-
+  
 const Stack = createStackNavigator();
 
 const App = () => {

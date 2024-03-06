@@ -8,7 +8,7 @@ import uvicorn
 app=FastAPI()
 
 # Conexión a MongoDB
-client = MongoClient("mongodb+srv://javihp03:D8wjHJ0JpAG6be6O@cluster0.ycxgksh.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://javihp03:D8wjHJ0JpAG6be6O@cluster0.ycxgksh.mongodb.net/?retryWrites=true&w=majority",tlsAllowInvalidCertificates=True)
 db = client["BarManagement"]
 # Guardo en una variable cada una de las colecciones
 collection_espacios = db['Espacios']
@@ -46,6 +46,8 @@ class Item(BaseModel):
     nombre: str
     tipo: str
     precio: float
+    stock: Optional[int] = None
+    imagen:Optional[str]=None
 
 class Pedido(BaseModel):
     id: str
