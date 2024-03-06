@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import OrderModal from './OrderModal';
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Image,FlatList,RefreshControl} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import menuDelDiaImage from '../assets/menuDia.png';
@@ -10,6 +11,55 @@ import imagenPorDefecto from '../assets/imagenPorDefecto.png';
 function MenuScreen({ navigation }) {
   const [menuItems, setMenuItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [totalOrder, setTotalOrder] = useState(0); 
+
+  const handlePlaceOrder = () => {
+    // Aquí implementas la lógica de realizar el pedido
+    // Por ejemplo, puedes usar el método realizarPedido de tu componente
+    realizarPedido();
+    setModalVisible(false); // Cierra el modal después de realizar el pedido
+  };
+  // Lógica para calcular el total
+  const calculateTotal = () => {
+    // Suma los precios de todos los items multiplicados por su cantidad
+    const total = menuItems.reduce((acc, item) => acc + (item.cantidad * item.precio), 0);
+    setTotalOrder(total);
+  };
+  useEffect(() => {
+    calculateTotal();
+  }, [menuItems]);
+
+  // Muestra el modal con el total
+  // const showOrderModal = () => {
+  //   calculateTotal();
+  //   setModalVisible(true);
+  // };
+
+  // Funcion para realizar el pedido
+  const realizarPedido = async () => {
+    const idEspacio = route.params.idEspacio; // Lees idEspacio de los parámetros
+    // const telefono = route.params.telefono; // Lees el teléfono de los parámetros
+
+    // Lógica para generar el ID del pedido (por ejemplo, podrías usar una secuencia numérica o un UUID)
+    const idPedido = `pedido_${Date.now()}`; // Simplemente un ejemplo para generar un ID único
+
+    // Construyes el objeto pedido
+    const pedido = {
+      id: idPedido,
+      idEspacio: idEspacio,
+      items: menuItems.filter(item => item.cantidad > 0).map(item => ({
+        idItem: item.id,
+        cantidad: item.cantidad
+      })),
+      estado: 'Pendiente',
+      estadoPago: 'No Pagado'
+    };
+
+    // ... Realizas la petición POST para crear el pedido
+  };
+
+  // Funcion para obtener los items haciendo la peticion a la API que conecta con MongoDB
   const fetchMenuItems = async () => {
     setRefreshing(true);
     try {
@@ -27,7 +77,7 @@ function MenuScreen({ navigation }) {
     fetchMenuItems();
   }, []);
 
-
+  // Funcion para incrementar la cantidad del plato/menu #Maximo hasta el stock del pedido
   const incrementarCantidad = (id) => {
     setMenuItems(currentItems =>
       currentItems.map(item => {
@@ -46,11 +96,13 @@ function MenuScreen({ navigation }) {
   
             // Incrementa la cantidad solo si es menor que el stock mínimo
             if (item.cantidad < minStock) {
+              
               return { ...item, cantidad: item.cantidad + 1 };
             }
           } else {
             // Si el ítem no es un menú, simplemente verifica contra su stock
             if (item.cantidad < item.stock) {
+              
               return { ...item, cantidad: item.cantidad + 1 };
             }
           }
@@ -59,13 +111,14 @@ function MenuScreen({ navigation }) {
       })
     );
   };
-
+  // Funcion para decrementar la cantidad pedida
   const decrementarCantidad = (id) => {
     setMenuItems(currentItems =>
       currentItems.map(item => {
         if (item.id === id && item.cantidad > 0) {
           return { ...item, cantidad: item.cantidad - 1 };
         }
+        
         return item;
       })
     );
@@ -83,6 +136,7 @@ function MenuScreen({ navigation }) {
   };
 
   return (
+    <>
     <ScrollView style={styles.container} refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={fetchMenuItems} />
     }>
@@ -132,6 +186,13 @@ function MenuScreen({ navigation }) {
         )
       ))}
     </ScrollView>
+    <OrderModal
+      visible={isModalVisible}
+      onDismiss={() => setModalVisible(false)}
+      total={totalOrder}
+      onPlaceOrder={handlePlaceOrder}
+    />
+  </>
   );
 }
 

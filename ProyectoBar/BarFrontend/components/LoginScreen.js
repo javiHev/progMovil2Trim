@@ -17,9 +17,10 @@ const LoginScreen = ({ navigation }) => {
       const response = await fetch(`http://10.0.2.2:8000/reservas/telefono/${phoneNumber}`);
       if (response.ok) {
         const data = await response.json();
+        console.log(data)
         // Si el servidor devuelve una reserva, navega a Home
-        Alert.alert('Éxito', 'Número de teléfono vinculado a una reserva.');
-        navigation.navigate('Home');
+        Alert.alert('Éxito', '');
+        navigation.navigate('Home', { idsEspacios: data.reserva.idsEspacios });
       } else {
         // Si el servidor devuelve un error 404 u otro, muestra un mensaje
         Alert.alert('Error', 'Número de teléfono no vinculado a ninguna reserva.');

@@ -4,11 +4,9 @@ import { Ionicons } from '@expo/vector-icons';
 
 // Componentes de pantalla simulados
 import MenuScreen from './MenuScreen';
-// import DrinksScreen from './DrinksScreen';
-// import CartScreen from './CartScreen';
-// const MenuScreen = () => null;
-const DrinksScreen = () => null;
-const CartScreen = () => null;
+import DrinksScreen from './DrinksScreen';
+import CartScreen from './CartScreen';
+
 
 const Tab = createBottomTabNavigator();
 
