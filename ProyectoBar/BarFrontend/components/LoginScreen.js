@@ -19,7 +19,7 @@ const LoginScreen = ({ navigation }) => {
         const data = await response.json();
         console.log(data)
         // Si el servidor devuelve una reserva, navega a Home
-        Alert.alert('Éxito', '');
+        Alert.alert(`Hola ${name}`, `Tus mesas son:\n${data.reserva.idsEspacios}`);
         navigation.navigate('Home', { idsEspacios: data.reserva.idsEspacios });
       } else {
         // Si el servidor devuelve un error 404 u otro, muestra un mensaje

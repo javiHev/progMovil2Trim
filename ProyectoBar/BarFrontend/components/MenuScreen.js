@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import OrderModal from './OrderModal';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Image,FlatList,RefreshControl} from 'react-native';
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Image,Alert,RefreshControl} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import menuDelDiaImage from '../assets/menuDia.png';
 import imagenPorDefecto from '../assets/imagenPorDefecto.png';
@@ -8,17 +8,23 @@ import imagenPorDefecto from '../assets/imagenPorDefecto.png';
 
 
 
-function MenuScreen({ navigation }) {
+function MenuScreen({idsEspacios}) {
   const [menuItems, setMenuItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [totalOrder, setTotalOrder] = useState(0); 
-
-  const handlePlaceOrder = () => {
-    // Aquí implementas la lógica de realizar el pedido
-    // Por ejemplo, puedes usar el método realizarPedido de tu componente
-    realizarPedido();
-    setModalVisible(false); // Cierra el modal después de realizar el pedido
+  
+  
+  const handlePlaceOrder = async () => {
+    try {
+      await realizarPedido(); // Asume que realizarPedido es una función que realiza el pedido
+      Alert.alert('Éxito', 'Su pedido se ha realizado correctamente');
+      setTotalOrder(0); // Resetea el total del pedido
+      setModalVisible(false); // Cierra el modal
+    } catch (error) {
+      Alert.alert('Error', 'Hubo un problema al realizar el pedido');
+      console.error(error);
+    }
   };
   // Lógica para calcular el total
   const calculateTotal = () => {
@@ -31,32 +37,79 @@ function MenuScreen({ navigation }) {
   }, [menuItems]);
 
   // Muestra el modal con el total
-  // const showOrderModal = () => {
-  //   calculateTotal();
-  //   setModalVisible(true);
-  // };
+  const showOrderModal = () => {
+    calculateTotal();
+    setModalVisible(true);
+  };
 
   // Funcion para realizar el pedido
   const realizarPedido = async () => {
-    const idEspacio = route.params.idEspacio; // Lees idEspacio de los parámetros
-    // const telefono = route.params.telefono; // Lees el teléfono de los parámetros
+      // Construyes el objeto pedido
 
-    // Lógica para generar el ID del pedido (por ejemplo, podrías usar una secuencia numérica o un UUID)
-    const idPedido = `pedido_${Date.now()}`; // Simplemente un ejemplo para generar un ID único
 
-    // Construyes el objeto pedido
-    const pedido = {
-      id: idPedido,
-      idEspacio: idEspacio,
-      items: menuItems.filter(item => item.cantidad > 0).map(item => ({
+      const print=menuItems.filter(item => item.cantidad > 0).map(item => ({
         idItem: item.id,
         cantidad: item.cantidad
-      })),
-      estado: 'Pendiente',
-      estadoPago: 'No Pagado'
-    };
-
-    // ... Realizas la petición POST para crear el pedido
+      }))
+      const pedido = {
+        id: `pedido_${Date.now()}`,
+        idEspacios: idsEspacios, // Asegúrate de obtener este dato de los parámetros de la navegación o del contexto de la aplicación
+        items: menuItems.filter(item => item.cantidad > 0).map(item => ({
+          idItem: item.id,
+          cantidad: item.cantidad
+        })),
+        estado: 'Pendiente',
+        estadoPago: 'No Pagado'
+      };
+      console.log(JSON.stringify(pedido))
+    
+      // Realizas la petición POST para crear el pedido
+      try {
+        const responseCrearPedido = await fetch('http://10.0.2.2:8000/pedidos/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(pedido),
+        });
+    
+        const pedidoCreado = await responseCrearPedido.json();
+        
+        // Si el pedido se crea con éxito, actualiza el stock
+        if (responseCrearPedido.ok) {
+          const stockUpdates = [];
+    
+          for (let item of menuItems) {
+            if (item.cantidad > 0) {
+              if (item.tipo === 'Menú') {
+                // Para los menús, añade una actualización de stock para cada plato
+                for (let plato of item.platos) {
+                  stockUpdates.push({ idItem: plato.id, cantidad: item.cantidad });
+                }
+              } else {
+                // Para items individuales, simplemente añade una actualización de stock
+                stockUpdates.push({ idItem: item.id, cantidad: item.cantidad });
+              }
+            }
+          }
+    
+          // Realiza la petición PATCH para actualizar el stock
+          const restarStock = await fetch('http://10.0.2.2:8000/update-stock/', {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(stockUpdates),
+          });
+          if (!restarStock.ok){
+            print('No se pudo restar el pedido')
+          }
+        }else{
+          print('El pedido no fue registrado')
+        }
+      } catch (error) {
+        console.error('Error al realizar el pedido:', error);
+      }
   };
 
   // Funcion para obtener los items haciendo la peticion a la API que conecta con MongoDB
@@ -136,7 +189,7 @@ function MenuScreen({ navigation }) {
   };
 
   return (
-    <>
+    <View style={styles.screenContainer}>
     <ScrollView style={styles.container} refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={fetchMenuItems} />
     }>
@@ -186,21 +239,37 @@ function MenuScreen({ navigation }) {
         )
       ))}
     </ScrollView>
+    <TouchableOpacity style={styles.basketButton} onPress={showOrderModal}>
+        <Ionicons name="basket" size={30} color="tomato" />
+      </TouchableOpacity>
     <OrderModal
       visible={isModalVisible}
       onDismiss={() => setModalVisible(false)}
       total={totalOrder}
       onPlaceOrder={handlePlaceOrder}
     />
-  </>
+  </View>
   );
 }
 
 // Nuevos estilos basados en la imagen proporcionada
 const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+    justifyContent: 'space-between', // Esto asegura que el botón se quede en la parte inferior de la pantalla
+  },
+  basketButton: {
+    padding: 10,
+    backgroundColor: '#F0F5FA', 
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderTopWidth: 1,
+    borderColor: '#e2e2e2', // Color para el borde superior, cambia según tu diseño
+  },
   container: {
     flex: 1,
     backgroundColor: '#F0F5FA', // Color de fondo del contenedor principal
+    
   },
   scrollPlatos:{
     flexDirection: 'row',

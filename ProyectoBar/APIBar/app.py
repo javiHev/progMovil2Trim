@@ -37,9 +37,6 @@ class Espacio(BaseModel):
     disponibilidad: Optional[bool] = None
     sitios: Optional[List[Sitio]] = None
 
-class ItemMenu(BaseModel):
-    idItem: str
-    cantidad: int = Field(..., alias="numeroInt")
     
 class Item(BaseModel):
     id: str
@@ -49,9 +46,12 @@ class Item(BaseModel):
     stock: Optional[int] = None
     imagen:Optional[str]=None
 
+class ItemMenu(BaseModel):
+    idItem: str
+    cantidad: int = Field(..., alias="cantidad")
 class Pedido(BaseModel):
     id: str
-    idEspacio: str
+    idEspacios: List[str]
     items: List[ItemMenu]
     estado: str
     estadoPago: str
@@ -62,6 +62,11 @@ class Plato(BaseModel):
     tipo: str
     precio: float
     stock: Optional[int] = None
+# Nuevo modelo Pydantic para actualizar el stock
+class StockUpdate(BaseModel):
+    idItem: str
+    cantidad: int
+
 
 class Menu(BaseModel):
     id: str
@@ -115,13 +120,37 @@ async def leer_menu_completo():
     return menu_completo
 
 
-# Crea un pedido al pagar
+# Crea un pedido al pedir
 @app.post("/pedidos/", response_model=Pedido)
 async def crear_pedido(pedido: Pedido):
-    pedido_dict = pedido.dict(by_alias=True)  # Convertir el modelo Pydantic a un diccionario para MongoDB
+    print("Hola")
+    pedido_dict = pedido.model_dump(by_alias=True)# Convertir el modelo Pydantic a un diccionario para MongoDB
+    print(f"Pedido {pedido_dict}")
     resultado = collection_Pedidos.insert_one(pedido_dict)
     pedido_creado = collection_Pedidos.find_one({"_id": resultado.inserted_id})
     return pedido_creado
+
+# Actualizar el stock cada vez que se realiza un pedido
+@app.patch("/update-stock/", response_model=List[Item])
+async def update_stock(updates: List[StockUpdate]):
+    updated_items = []
+    for update in updates:
+        # Buscar el ítem en la base de datos por idItem
+        item = collection_Menu.find_one({'id': update.idItem})
+        if not item:
+            raise HTTPException(status_code=404, detail=f"Item with id {update.idItem} not found")
+        if item['stock'] < update.cantidad:
+            raise HTTPException(status_code=400, detail=f"Not enough stock for item {update.idItem}")
+
+        # Actualizar el stock del ítem
+        new_stock = item['stock'] - update.cantidad
+        collection_Menu.update_one({'id': update.idItem}, {'$set': {'stock': new_stock}})
+        
+        # Agregar el ítem actualizado a la lista de respuesta
+        item['stock'] = new_stock
+        updated_items.append(Item(**item))
+
+    return updated_items
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)

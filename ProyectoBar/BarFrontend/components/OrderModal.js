@@ -13,10 +13,10 @@ const OrderModal = ({ visible, onDismiss, total, onPlaceOrder }) => {
         <View style={styles.modalView}>
           <Text style={styles.modalText}>TOTAL: ${total}</Text>
           <TouchableOpacity style={styles.placeOrderButton} onPress={onPlaceOrder}>
-            <Text style={styles.textStyle}>PLACE ORDER</Text>
+            <Text style={styles.textStyle}>REALIZAR PEDIDO</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.closeButton} onPress={onDismiss}>
-            <Text style={styles.textStyle}>CLOSE</Text>
+            <Text style={styles.textStyle}>SEGUIR PIDIENDO</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
       marginBottom: 10 // Espacio debajo del botón
     },
     closeButton: {
-      backgroundColor: '#F0F5FA', // Color de fondo del botón Edit
+      backgroundColor: '#98A8B8', // Color de fondo del botón Edit
       borderRadius: 20,
       padding: 10,
       elevation: 2,
