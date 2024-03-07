@@ -8,16 +8,18 @@ import imagenPorDefecto from '../assets/imagenPorDefecto.png';
 
 
 
-function MenuScreen({idsEspacios}) {
+function MenuScreen({navigation,idsEspacios,telefono}) {
   const [menuItems, setMenuItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [totalOrder, setTotalOrder] = useState(0); 
-  
+  let totalPrice=0;
+  navigation.navigate('CartScreen',{totalMenu:totalPrice})
+
   
   const handlePlaceOrder = async () => {
     try {
-      await realizarPedido(); // Asume que realizarPedido es una función que realiza el pedido
+      await realizarPedido(); // Funcion para realizar el pedido
       Alert.alert('Éxito', 'Su pedido se ha realizado correctamente');
       setTotalOrder(0); // Resetea el total del pedido
       setModalVisible(false); // Cierra el modal
@@ -31,6 +33,7 @@ function MenuScreen({idsEspacios}) {
     // Suma los precios de todos los items multiplicados por su cantidad
     const total = menuItems.reduce((acc, item) => acc + (item.cantidad * item.precio), 0);
     setTotalOrder(total);
+    totalPrice+=total;
   };
   useEffect(() => {
     calculateTotal();
@@ -53,7 +56,8 @@ function MenuScreen({idsEspacios}) {
       }))
       const pedido = {
         id: `pedido_${Date.now()}`,
-        idEspacios: idsEspacios, // Asegúrate de obtener este dato de los parámetros de la navegación o del contexto de la aplicación
+        idEspacios: idsEspacios, // Recibido desde el parametro de la app
+        telefono:telefono,    // Telefono con el que identificamos la reserva y el pedido
         items: menuItems.filter(item => item.cantidad > 0).map(item => ({
           idItem: item.id,
           cantidad: item.cantidad

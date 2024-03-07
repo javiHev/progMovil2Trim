@@ -49,9 +49,11 @@ class Item(BaseModel):
 class ItemMenu(BaseModel):
     idItem: str
     cantidad: int = Field(..., alias="cantidad")
+    
 class Pedido(BaseModel):
     id: str
     idEspacios: List[str]
+    telefono:int
     items: List[ItemMenu]
     estado: str
     estadoPago: str

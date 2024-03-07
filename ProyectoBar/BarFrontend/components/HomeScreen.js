@@ -13,9 +13,9 @@ const Tab = createBottomTabNavigator();
 const HomeScreen = ({ route,navigation }) => {
   // Extraer idsEspacios de route.params
   console.log(route)
-  console.log(navigation)
-  const { idsEspacios } = route.params; // Asegurándonos de que no sea undefined
-  console.log(idsEspacios)
+  // console.log(navigation)
+  const { idsEspacios,telefono } = route.params; // Asegurándonos de que no sea undefined
+  console.log(`Espacios: ${idsEspacios},Telefono ${telefono}`)
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -35,8 +35,8 @@ const HomeScreen = ({ route,navigation }) => {
       })}
     >
       {/* Pasar idsEspacios como parámetro inicial a MenuScreen y DrinksScreen */}
-      <Tab.Screen name="Menu" children={() => <MenuScreen idsEspacios={idsEspacios} />} />
-      <Tab.Screen name="Bebidas" children={() => <DrinksScreen idsEspacios={idsEspacios} />} />
+      <Tab.Screen name="Menu" children={() => <MenuScreen navigation={navigation} idsEspacios={idsEspacios} telefono={telefono} />} />
+      <Tab.Screen name="Bebidas" children={() => <DrinksScreen navigation={navigation} idsEspacios={idsEspacios} telefono={telefono}/>} />
       <Tab.Screen name="Carrito" component={CartScreen} />
     </Tab.Navigator>
   );

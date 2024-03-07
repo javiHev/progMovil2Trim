@@ -20,7 +20,7 @@ const LoginScreen = ({ navigation }) => {
         console.log(data)
         // Si el servidor devuelve una reserva, navega a Home
         Alert.alert(`Hola ${name}`, `Tus mesas son:\n${data.reserva.idsEspacios}`);
-        navigation.navigate('Home', { idsEspacios: data.reserva.idsEspacios });
+        navigation.navigate('Home', { idsEspacios: data.reserva.idsEspacios, telefono:phoneNumber});
       } else {
         // Si el servidor devuelve un error 404 u otro, muestra un mensaje
         Alert.alert('Error', 'Número de teléfono no vinculado a ninguna reserva.');
