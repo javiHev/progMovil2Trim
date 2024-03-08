@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import OrderModal from './OrderModal';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Image, RefreshControl } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Image, RefreshControl,Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import imagenPorDefecto from '../assets/imagenPorDefecto.png';
 
-function DrinksScreen({navigation,idsEspacios,telefono}) {
+function DrinksScreen({setTotalDrinks,idsEspacios,telefono}) {
   const [drinkItems, setDrinkItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [totalOrder, setTotalOrder] = useState(0);
-  const totalPrice=0;
-  navigation.navigate('CartScreen',{totalDrinks:totalPrice})
+  let totalPrice=0;
+  // navigation.navigate('Carrito',{totalDrinks:totalPrice})
 
   const fetchDrinkItems = async () => {
     setRefreshing(true);
@@ -60,10 +60,12 @@ function DrinksScreen({navigation,idsEspacios,telefono}) {
     // Suma los precios de todos los items multiplicados por su cantidad
     const total = drinkItems.reduce((acc, item) => acc + (item.cantidad * item.precio), 0);
     setTotalOrder(total);
+    totalPrice+=total;
+    setTotalDrinks(totalPrice);
   };
   // Funcionalidades para pedir una bebida:
    // Muestra el modal con el total
-   const showOrderModal = () => {
+  const showOrderModal = () => {
     calculateTotal();
     setModalVisible(true);
   };
@@ -91,7 +93,7 @@ function DrinksScreen({navigation,idsEspacios,telefono}) {
       id: `pedido_${Date.now()}`,
       idEspacios: idsEspacios, // Recibido desde el parametro de la app
       telefono:telefono,    // Telefono con el que identificamos la reserva y el pedido
-      items: menuItems.filter(item => item.cantidad > 0).map(item => ({
+      items: drinkItems.filter(item => item.cantidad > 0).map(item => ({
         idItem: item.id,
         cantidad: item.cantidad
       })),

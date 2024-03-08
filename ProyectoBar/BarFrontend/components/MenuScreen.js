@@ -8,13 +8,13 @@ import imagenPorDefecto from '../assets/imagenPorDefecto.png';
 
 
 
-function MenuScreen({navigation,idsEspacios,telefono}) {
+function MenuScreen({setTotalMenu,idsEspacios,telefono}) {
   const [menuItems, setMenuItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [totalOrder, setTotalOrder] = useState(0); 
   let totalPrice=0;
-  navigation.navigate('CartScreen',{totalMenu:totalPrice})
+  
 
   
   const handlePlaceOrder = async () => {
@@ -34,6 +34,7 @@ function MenuScreen({navigation,idsEspacios,telefono}) {
     const total = menuItems.reduce((acc, item) => acc + (item.cantidad * item.precio), 0);
     setTotalOrder(total);
     totalPrice+=total;
+    setTotalMenu(totalPrice);
   };
   useEffect(() => {
     calculateTotal();

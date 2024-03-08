@@ -154,5 +154,12 @@ async def update_stock(updates: List[StockUpdate]):
 
     return updated_items
 
+
+
+@app.get("/pedidos/telefono/{telefono}", response_model=List[Pedido])
+async def obtener_pedidos_por_telefono(telefono: str):
+    pedidos = collection_Pedidos.find({"telefono": telefono})
+    return list(pedidos)
+
 if __name__ == "__main__":
     uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
