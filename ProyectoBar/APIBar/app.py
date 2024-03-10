@@ -157,9 +157,39 @@ async def update_stock(updates: List[StockUpdate]):
 
 
 @app.get("/pedidos/telefono/{telefono}", response_model=List[Pedido])
-async def obtener_pedidos_por_telefono(telefono: str):
+async def obtener_pedidos_por_telefono(telefono: int):
     pedidos = collection_Pedidos.find({"telefono": telefono})
     return list(pedidos)
+
+# Elimina un pedido por id de pedido
+@app.delete("/pedidos/{pedido_id}", response_model=dict)
+async def eliminar_pedido(pedido_id: str):
+    # Buscar el pedido por ID
+    resultado_busqueda = collection_Pedidos.find_one({"id": pedido_id})
+
+    if resultado_busqueda is None:
+        # Si no se encuentra el pedido, devuelve un error 404
+        raise HTTPException(status_code=404, detail="Pedido no encontrado")
+
+    # Eliminar el pedido encontrado
+    collection_Pedidos.delete_one({"id": pedido_id})
+
+    # Devolver una confirmación de que el pedido fue eliminado
+    return {"mensaje": f"Pedido con ID {pedido_id} eliminado correctamente"}
+
+
+
+# Al pagar se elimina la reserva que contenga el numero de telefono del usuario
+@app.delete("/reservas/eliminar/{telefono_numero}")
+async def eliminar_reservas_por_telefono(telefono_numero: int):
+    # Buscar y eliminar todas las reservas con el número de teléfono dado
+    resultado = collection_Reservas.delete_many({"telefono": telefono_numero})
+
+    if resultado.deleted_count == 0:
+        # Si no se encontraron reservas para eliminar, devuelve un error
+        raise HTTPException(status_code=404, detail="No se encontraron reservas con ese número de teléfono")
+    
+    return {"mensaje": f"Se eliminaron {resultado.deleted_count} reservas asociadas al teléfono {telefono_numero}"}
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
