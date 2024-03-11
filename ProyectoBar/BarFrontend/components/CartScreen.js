@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, RefreshControl,Alert,Modal} from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, RefreshControl, Alert, Modal } from 'react-native';
 
-function CartScreen({ totalMenu, totalDrinks, telefono }) {
+function CartScreen({ idsEspacios, telefono }) {
   const [showModal, setShowModal] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -39,7 +39,7 @@ function CartScreen({ totalMenu, totalDrinks, telefono }) {
 
   useEffect(() => {
     fetchMenuItems();
-  },[]);
+  }, []);
 
   useEffect(() => {
     let nuevoTotal = 0;
@@ -53,35 +53,35 @@ function CartScreen({ totalMenu, totalDrinks, telefono }) {
     });
     setTotalAPagar(nuevoTotal);
   }, [cartItems, pedidoItems]); // Este efecto se ejecutará cada vez que cartItems o pedidoItems cambien
-  
 
 
-  
+
+
 
 
   const findItemDetails = (idItem) => {
     const itemDetails = pedidoItems.find((pedidoItem) => pedidoItem.id === idItem);
     return itemDetails ? itemDetails : { nombre: '', precio: 0, imagen: null };
-    
+
   };
-  const cancelItem =async (id) => {
+  const cancelItem = async (id) => {
     try {
       // Realizar la petición DELETE a tu API para eliminar el pedido por su ID
       const response = await fetch(`http://10.0.2.2:8000/pedidos/${id}`, {
         method: 'DELETE',
       });
-  
+
       if (!response.ok) {
         // Si la respuesta no es exitosa, lanzar un error
         throw new Error('No se pudo eliminar el pedido');
       }
-  
+
       // Si la eliminación fue exitosa, mostrar una alerta de éxito
       Alert.alert('Éxito', 'Pedido eliminado con éxito', [{ text: 'OK' }]);
-      
+
       // Opcional: Actualizar la lista de pedidos en la interfaz para reflejar los cambios
       fetchMenuItems(); // Suponiendo que esta función actualiza la lista de pedidos
-  
+
     } catch (error) {
       // En caso de error, mostrar una alerta informando del problema
       Alert.alert('Error', 'Error al eliminar el pedido: ' + error.message, [{ text: 'OK' }]);
@@ -95,7 +95,7 @@ function CartScreen({ totalMenu, totalDrinks, telefono }) {
       await fetch(`http://10.0.2.2:8000/reservas/eliminar/${telefono}`, {
         method: 'DELETE',
       });
-  
+
       // 2. Eliminar todos los pedidos en cartItems por ID
       for (const pedido of cartItems) {
         await fetch(`http://10.0.2.2:8000/pedidos/${pedido.id}`, {
@@ -103,12 +103,22 @@ function CartScreen({ totalMenu, totalDrinks, telefono }) {
         });
       }
 
-      setTotalAPagar=0;
+
+      // 3. Cambiar el estado de los espacios a disponible
+      await fetch(`http://10.0.2.2:8000/espacios/cambiar-estado/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(idsEspacios), // Asegúrate de que el endpoint acepte el formato correcto
+      });
+
+      setTotalAPagar(0);
       // Muestra el mensaje de confirmación
-    Alert.alert('Confirmación de Pago', `El pago se realizará en ${method}. En unos momentos nuestro empleado procederá con el cobro.`, [
-      { text: 'OK', onPress: () => { navigation.navigate('Login');  setShowModal(false);} }
-    ]);
-    // setShowModal(false); // Cierra el modal
+      Alert.alert('Confirmación de Pago', `El pago se realizará en ${method}. En unos momentos nuestro empleado procederá con el cobro.`, [
+        { text: 'OK', onPress: () => { navigation.navigate('Login'); setShowModal(false); } }
+      ]);
+      // setShowModal(false); // Cierra el modal
 
 
     } catch (error) {
@@ -126,10 +136,10 @@ function CartScreen({ totalMenu, totalDrinks, telefono }) {
             if (!itemDetails) {
               return null;
             }
-  
+
             const { nombre, precio, imagen } = itemDetails;
             const subtotal = precio * cartItem.cantidad;
-  
+
             return (
               <View key={index} style={styles.itemContainer}>
                 {imagen && <Image source={{ uri: imagen }} style={styles.itemImage} />}
@@ -157,12 +167,12 @@ function CartScreen({ totalMenu, totalDrinks, telefono }) {
   return (
     <View style={styles.container}>
       <FlatList
-       data={cartItems}
-       renderItem={renderItem}
-       keyExtractor={(item) => item.id} // Ajuste sugerido
-       refreshControl={
-         <RefreshControl refreshing={refreshing} onRefresh={fetchMenuItems} />
-       }
+        data={cartItems}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id} // Ajuste sugerido
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={fetchMenuItems} />
+        }
       />
       <View style={styles.basketButton}>
         <Text style={styles.totalText}>TOTAL: ${totalAPagar}</Text>
@@ -171,20 +181,20 @@ function CartScreen({ totalMenu, totalDrinks, telefono }) {
         </TouchableOpacity>
 
         <Modal visible={showModal} transparent={true} animationType="slide">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity style={styles.optionButton} onPress={() => handlePaymentOption('efectivo')}>
-              <Ionicons name="cash" size={38} color="green" />
-              <Text style={styles.typePay}>Efectivo</Text>
-            </TouchableOpacity>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <TouchableOpacity style={styles.optionButton} onPress={() => handlePaymentOption('efectivo')}>
+                <Ionicons name="cash" size={38} color="green" />
+                <Text style={styles.typePay}>Efectivo</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity style={styles.optionButton} onPress={() => handlePaymentOption('tarjeta')}>
-              <Ionicons name="card" size={38} color="blue" />
-              <Text style={styles.typePay}>Tarjeta</Text>
-            </TouchableOpacity>
+              <TouchableOpacity style={styles.optionButton} onPress={() => handlePaymentOption('tarjeta')}>
+                <Ionicons name="card" size={38} color="blue" />
+                <Text style={styles.typePay}>Tarjeta</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
       </View>
     </View>
   );
@@ -204,7 +214,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   optionButton: {
-    width: '80%', 
+    width: '80%',
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 10,
@@ -214,10 +224,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
   },
-  typePay:{
-    color:'#3C3633',
+  typePay: {
+    color: '#3C3633',
     fontSize: 20,
-    marginLeft:8,
+    marginLeft: 8,
   },
   container: {
     flex: 1,

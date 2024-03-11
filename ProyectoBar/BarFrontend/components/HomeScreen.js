@@ -38,7 +38,7 @@ const HomeScreen = ({ route }) => {
       <Tab.Screen name="Menu" children={() => <MenuScreen setTotalMenu={setTotalMenu} idsEspacios={idsEspacios} telefono={telefono} />} />
       <Tab.Screen name="Bebidas" children={() => <DrinksScreen setTotalDrinks={setTotalDrinks} idsEspacios={idsEspacios} telefono={telefono} />} />
       <Tab.Screen name="Carrito">
-        {() => <CartScreen totalMenu={totalMenu} totalDrinks={totalDrinks} telefono={telefono} />}
+        {() => <CartScreen idsEspacios={idsEspacios} telefono={telefono} />}
       </Tab.Screen>
     </Tab.Navigator>
   );

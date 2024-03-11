@@ -191,5 +191,30 @@ async def eliminar_reservas_por_telefono(telefono_numero: int):
     
     return {"mensaje": f"Se eliminaron {resultado.deleted_count} reservas asociadas al teléfono {telefono_numero}"}
 
+
+# Cambia el estado de la mesa cuando pagas, es decir se libera cuando pagas
+@app.patch("/espacios/cambiar-estado/")
+async def cambiar_estado_espacios(ids_espacios: List[str]):
+    for id_espacio in ids_espacios:
+        if "sitio" in id_espacio:
+            # Es un sitio dentro de una barra
+            barra_id = id_espacio.split("_")[0]
+            resultado = collection_espacios.update_one(
+                {"tipo": "barra", "sitios.id": id_espacio},
+                {"$set": {"sitios.$.disponibilidad": True}}
+            )
+            if resultado.matched_count == 0:
+                raise HTTPException(status_code=404, detail=f"No se encontró el sitio {id_espacio} en ninguna barra")
+        else:
+            # Es un espacio general (mesa, terraza, etc.)
+            resultado = collection_espacios.update_one(
+                {"id": id_espacio},
+                {"$set": {"disponibilidad": True}}
+            )
+            if resultado.matched_count == 0:
+                raise HTTPException(status_code=404, detail=f"No se encontró el espacio {id_espacio}")
+
+    return {"mensaje": "Estado de los espacios actualizado correctamente"}
+
 if __name__ == "__main__":
     uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
